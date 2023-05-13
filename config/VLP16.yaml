@@ -1,0 +1,41 @@
+# common
+lidar_type: "VLP16"  # "VLP16", "HDL32", "HDL64", "OS1-32", "OS1-64"
+lidar_topic: "velodyne_points"
+N_SCAN: 16
+Horizon_SCAN: 1800 # 雷达水平点数  # 1800, 1024, 512
+
+#  if 1, do mapping 10 Hz, if 2, do mapping 5 Hz. Suggest to use 1, it will adjust frequence automaticlly
+mapping_skip_frame: 1
+# 但手持激光雷达点云太近会导致匹配错误，要设置大一些 
+minimum_range: 0.7
+
+# 地图分辨率不能设得过于稠密，否则地图会过于稠密而优化过程过慢而导致定位建图退化
+mapping_line_resolution: 0.2
+mapping_plane_resolution:  0.4
+
+# map optimization
+loopClosureEnableFlag: true # 是否开启回环检测
+loopClosureFrequency: 1.0 # 回环检测频率
+savePCD: false # 是否保存点云地图
+
+mappingProcessInterval: 0.15
+globalMapVisualizationSearchRadius: 1000
+globalMapVisualizationPoseDensity: 10
+globalMapVisualizationLeafSize: 1.0
+odometryFrame: "camera_init"
+surroundingKeyframeSize: 50
+surroundingKeyframeSearchRadius: 50
+edgeFeatureMinValidNum: 10
+surfFeatureMinValidNum: 100
+z_tollerance: 1000
+rotation_tollerance: 1000
+historyKeyframeSearchNum: 25
+surroundingkeyframeAddingAngleThreshold: 0.2
+historyKeyframeSearchRadius: 10.0
+historyKeyframeSearchTimeDiff: 30.0
+surroundingkeyframeAddingDistThreshold: 1.0
+historyKeyframeFitnessScore: 0.3
+odometrySurfLeafSize: 0.4            # default: 0.4 - outdoor, 0.2 - indoor           
+mappingCornerLeafSize: 0.2           # default: 0.2 - outdoor, 0.1 - indoor
+mappingSurfLeafSize: 0.4              # default: 0.4 - outdoor, 0.2 - indoor
+surroundingKeyframeDensity: 2
