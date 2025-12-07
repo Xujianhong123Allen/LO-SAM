@@ -268,8 +268,8 @@ public:
     std::deque<nav_msgs::Odometry> gpsQueue;
     // LO_SAM::cloud_info cloudInfo;
 
-    vector<pcl::PointCloud<PointType>::Ptr> cornerCloudKeyFrames; // 历史所有关键帧的角点集合（降采样)
-    vector<pcl::PointCloud<PointType>::Ptr> surfCloudKeyFrames;   // 历史所有关键帧的平面点集合（降采样）
+    std::vector<pcl::PointCloud<PointType>::Ptr> cornerCloudKeyFrames; // 历史所有关键帧的角点集合（降采样)
+    std::vector<pcl::PointCloud<PointType>::Ptr> surfCloudKeyFrames;   // 历史所有关键帧的平面点集合（降采样）
 
     pcl::PointCloud<PointType>::Ptr cloudKeyPoses3D;     // 历史关键帧位姿（只有3D位置）
     pcl::PointCloud<PointTypePose>::Ptr cloudKeyPoses6D; // 历史关键帧位姿（6DOF）
@@ -294,7 +294,7 @@ public:
     std::vector<PointType> coeffSelSurfVec;
     std::vector<bool> laserCloudOriSurfFlag;
 
-    map<int, pair<pcl::PointCloud<PointType>, pcl::PointCloud<PointType>>> laserCloudMapContainer;
+    std::map<int, std::pair<pcl::PointCloud<PointType>, pcl::PointCloud<PointType>>> laserCloudMapContainer;
 
     pcl::PointCloud<PointType>::Ptr laserCloudCornerFromMap;   // 局部map的角点集合
     pcl::PointCloud<PointType>::Ptr laserCloudSurfFromMap;     // 局部map的平面点集合
@@ -331,11 +331,11 @@ public:
     int laserCloudSurfLastDSNum = 0;      // 当前激光帧面点数量
 
     bool aLoopIsClosed = false;
-    map<int, int> loopIndexContainer; // from new to old
-    vector<pair<int, int>> loopIndexQueue;
-    vector<gtsam::Pose3> loopPoseQueue;
-    vector<gtsam::noiseModel::Diagonal::shared_ptr> loopNoiseQueue;
-    deque<std_msgs::Float64MultiArray> loopInfoVec;
+    std::map<int, int> loopIndexContainer; // from new to old
+    std::vector<std::pair<int, int>> loopIndexQueue;
+    std::vector<gtsam::Pose3> loopPoseQueue;
+    std::vector<gtsam::noiseModel::Diagonal::shared_ptr> loopNoiseQueue;
+    std::deque<std_msgs::Float64MultiArray> loopInfoVec;
 
     nav_msgs::Path globalPath;
 
@@ -599,8 +599,8 @@ void Map_Optimization::odom_cloud_handler(const lo_sam::cloud_info::ConstPtr &od
         // (4)发布里程计轨迹
         publishFrames();
         ros::Time t2 = ros::Time::now();
-        // std::cout << "mapping takes: " << (t2 - t1).toSec() * 1000 << "ms\n"
-        //           << std::endl;
+        std::cout << "mapping optimization takes: " << (t2 - t1).toSec() * 1000 << "ms\n"
+                  << std::endl;
         //     laser_num++;
     }
 }
@@ -858,7 +858,7 @@ void Map_Optimization::extractCloud(pcl::PointCloud<PointType>::Ptr cloudToExtra
             // 加入局部map
             *laserCloudCornerFromMap += laserCloudCornerTemp;
             *laserCloudSurfFromMap += laserCloudSurfTemp;
-            laserCloudMapContainer[thisKeyInd] = make_pair(laserCloudCornerTemp, laserCloudSurfTemp);
+            laserCloudMapContainer[thisKeyInd] = std::make_pair(laserCloudCornerTemp, laserCloudSurfTemp);
         }
     }
 
@@ -1964,7 +1964,7 @@ void Map_Optimization::performLoopClosure()
     // 添加闭环因子需要的数据
     // 这些内容会在函数addLoopFactor中用到
     mtx.lock();
-    loopIndexQueue.push_back(make_pair(loopKeyCur, loopKeyPre));
+    loopIndexQueue.push_back(std::make_pair(loopKeyCur, loopKeyPre));
     loopPoseQueue.push_back(poseFrom.between(poseTo));
     loopNoiseQueue.push_back(constraintNoise);
     mtx.unlock();
@@ -2261,7 +2261,7 @@ void Map_Optimization::saveMap()
     {
         *globalCornerCloud += *transformPointCloud(cornerCloudKeyFrames[i], &cloudKeyPoses6D->points[i]);
         *globalSurfCloud += *transformPointCloud(surfCloudKeyFrames[i], &cloudKeyPoses6D->points[i]);
-        cout << "\r" << std::flush << "Processing feature cloud " << i << " of " << cloudKeyPoses6D->size() << " ...";
+        std::cout << "\r" << std::flush << "Processing feature cloud " << i << " of " << cloudKeyPoses6D->size() << " ...";
     }
     std::cout << std::endl;
 

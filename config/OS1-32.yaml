@@ -1,5 +1,5 @@
 # common
-lidar_type: "OS1-32"  # "VLP16", "HDL32", "HDL64", "OS1-32", "OS1-64"
+lidar_type: "Ouster"  # "Velodyne", "Ouster"
 lidar_topic: "ouster/points"
 N_SCAN: 32  
 Horizon_SCAN: 1024 # 雷达水平点数  # 1800, 1024, 512
@@ -7,7 +7,8 @@ Horizon_SCAN: 1024 # 雷达水平点数  # 1800, 1024, 512
 #  if 1, do mapping 10 Hz, if 2, do mapping 5 Hz. Suggest to use 1, it will adjust frequence automaticlly
 mapping_skip_frame: 1
 # 但手持激光雷达点云太近会导致匹配错误，要设置大一些 
-minimum_range: 0.7
+min_range: 0.7
+max_range: 200
 
 # 地图分辨率不能设得过于稠密，否则地图会过于稠密而优化过程过慢而导致定位建图退化
 mapping_line_resolution: 0.2

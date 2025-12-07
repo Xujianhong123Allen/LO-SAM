@@ -193,7 +193,7 @@ int main(int argc, char **argv)
 
     nh.param<int>("mapping_skip_frame", skipFrameNum, 2);
 
-    //printf("Mapping %d Hz \n", 10 / skipFrameNum);
+    ROS_INFO("\033[1;32m----> Laser odometry started.\033[0m");
 
     ros::Subscriber subCornerPointsSharp = nh.subscribe<sensor_msgs::PointCloud2>("feature/cloud_sharp", 100, laserCloudSharpHandler);
 
@@ -287,8 +287,7 @@ int main(int argc, char **argv)
 
                     //ceres::LossFunction *loss_function = NULL;
                     ceres::LossFunction *loss_function = new ceres::HuberLoss(0.1);
-                    ceres::LocalParameterization *q_parameterization =
-                        new ceres::EigenQuaternionParameterization();
+                    ceres::Manifold *q_parameterization = new ceres::EigenQuaternionManifold();
                     ceres::Problem::Options problem_options;
 
                     ceres::Problem problem(problem_options);
@@ -626,9 +625,12 @@ int main(int argc, char **argv)
             //     pubLaserCloudFullRes.publish(laserCloudFullRes3);
             // }
             //printf("publication time %f ms \n", t_pub.toc());
-            //printf("whole laserOdometry time %f ms \n", t_whole.toc());
-            if(t_whole.toc() > 100)
-                ROS_WARN("odometry process over 100ms");
+            std::cout << "Laser odometry time"<< t_whole.toc() << "ms" << std::endl;
+            // if(t_whole.toc() > 100)
+            // {
+            //     ROS_WARN("odometry process over 100ms");
+            // }
+                
 
             frameCount++;
         }
